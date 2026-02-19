@@ -17,5 +17,6 @@ export const CustomMenu = () => (
     <Menu.Item to="/tool-photos" primaryText="Tool Photos" />
     <Menu.Item to="/tool-assignments" primaryText="Tool Assignments" />
     <Menu.Item to="/detected-tools" primaryText="Detected Tools" />
+    <Menu.Item to="/locations" primaryText="Locations" />
   </Menu>
 );

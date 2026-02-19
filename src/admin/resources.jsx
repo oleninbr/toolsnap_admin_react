@@ -75,6 +75,11 @@ import { DetectedToolList } from "../features/detectedTools/DetectedToolList";
 import { DetectedToolEdit } from "../features/detectedTools/DetectedToolEdit";
 import { DetectedToolCreate } from "../features/detectedTools/DetectedToolCreate";
 
+// locations
+import { LocationList } from "../features/locations/LocationList";
+import { LocationEdit } from "../features/locations/LocationEdit";
+import { LocationCreate } from "../features/locations/LocationCreate";
+
 export const AdminResources = () => (
   <>
     <Resource
@@ -180,6 +185,13 @@ export const AdminResources = () => (
       list={DetectedToolList}
       edit={DetectedToolEdit}
       create={DetectedToolCreate}
+    />
+
+    <Resource
+      name="locations"
+      list={LocationList}
+      edit={LocationEdit}
+      create={LocationCreate}
     />
   </>
 );
