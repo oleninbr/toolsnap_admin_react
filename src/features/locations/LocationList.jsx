@@ -26,14 +26,14 @@ export const LocationList = () => (
     <Datagrid rowClick="edit">
       <RowNumberField />
       <TextField source="name" />
-      <ReferenceField source="location_type_id" reference="location-types">
+      <ReferenceField source="locationTypeId" reference="location-types">
         <TextField source="title" />
       </ReferenceField>
       <TextField source="address" />
       <NumberField source="latitude" />
       <NumberField source="longitude" />
-      <BooleanField source="is_active" />
-      <DateField source="created_at" showTime />
+      <BooleanField source="isActive" />
+      <DateField source="createdAt" showTime />
       <EditButton />
       <DeleteButton />
     </Datagrid>

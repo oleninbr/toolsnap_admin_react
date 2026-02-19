@@ -75,7 +75,9 @@ export const MapPicker = ({ latitude, longitude, onCoordinateSelect }) => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <Marker position={markerPosition} />
-          <MapClickHandler onCoordinateSelect={handleMapClick} />\n          <MapZoomHandler latitude={latitude} longitude={longitude} />\n        </MapContainer>
+          <MapClickHandler onCoordinateSelect={handleMapClick} />
+          <MapZoomHandler latitude={latitude} longitude={longitude} />
+        </MapContainer>
       </Box>
     </Box>
   );
