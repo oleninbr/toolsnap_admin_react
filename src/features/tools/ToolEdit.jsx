@@ -10,8 +10,6 @@ import {
 export const ToolEdit = () => (
   <Edit>
     <SimpleForm>
-      <TextInput source="id" disabled />
-
       <TextInput source="serial_number" />
 
       <ReferenceInput source="brand_id" reference="brands">
