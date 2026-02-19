@@ -4,6 +4,7 @@ import {
   TextInput,
   ReferenceInput,
   SelectInput,
+  required,
 } from "react-admin";
 
 export const ToolCreate = () => (
@@ -20,11 +21,11 @@ export const ToolCreate = () => (
       </ReferenceInput>
 
       <ReferenceInput source="tool_type_id" reference="tool_types">
-        <SelectInput optionText="title" />
+        <SelectInput optionText="title" validate={[required()]} />
       </ReferenceInput>
 
       <ReferenceInput source="tool_status_id" reference="tool_statuses">
-        <SelectInput optionText="title" />
+        <SelectInput optionText="title" validate={[required()]} />
       </ReferenceInput>
     </SimpleForm>
   </Create>

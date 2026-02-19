@@ -5,6 +5,7 @@ import {
   ReferenceInput,
   SelectInput,
   DateInput,
+  required,
 } from "react-admin";
 
 export const ToolEdit = () => (
@@ -21,11 +22,11 @@ export const ToolEdit = () => (
       </ReferenceInput>
 
       <ReferenceInput source="tool_type_id" reference="tool_types">
-        <SelectInput optionText="title" />
+        <SelectInput optionText="title" validate={[required()]} />
       </ReferenceInput>
 
       <ReferenceInput source="tool_status_id" reference="tool_statuses">
-        <SelectInput optionText="title" />
+        <SelectInput optionText="title" validate={[required()]} />
       </ReferenceInput>
 
       <DateInput source="created_at" />
