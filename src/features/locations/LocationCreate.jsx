@@ -7,8 +7,8 @@ import {
   ReferenceInput,
   SelectInput,
   required,
-  useFormContext,
 } from "react-admin";
+import { useFormContext } from "react-hook-form";
 import { MapPicker } from "./MapPicker";
 
 const MapPickerWrapper = () => {

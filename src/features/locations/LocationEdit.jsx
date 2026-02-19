@@ -8,8 +8,8 @@ import {
   SelectInput,
   DateTimeInput,
   required,
-  useFormContext,
 } from "react-admin";
+import { useFormContext } from "react-hook-form";
 import { MapPicker } from "./MapPicker";
 
 const MapPickerWrapper = () => {
