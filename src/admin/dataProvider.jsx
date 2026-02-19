@@ -89,6 +89,42 @@ const dataProvider = {
     }
   },
 
+  getMany: async (resource, params) => {
+    try {
+      const url = new URL(`${API_URL}/${resource}`);
+      
+      // Add filter for IDs
+      if (params.ids && params.ids.length > 0) {
+        // Create filter for multiple IDs
+        params.ids.forEach((id, index) => {
+          url.searchParams.append(`id${index}`, id);
+        });
+      }
+
+      console.log("🔵 Fetching many:", url.toString());
+      
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        credentials: "omit",
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch many");
+
+      const data = await response.json();
+      console.log("✅ Data received:", data);
+      
+      // Filter data to only include requested IDs
+      const filteredData = Array.isArray(data)
+        ? data.filter(item => params.ids.includes(item.id))
+        : [data];
+
+      return { data: filteredData };
+    } catch (error) {
+      console.error("🔴 Fetch many error:", error);
+      throw error;
+    }
+  },
+
   create: async (resource, params) => {
     try {
       const url = `${API_URL}/${resource}`;

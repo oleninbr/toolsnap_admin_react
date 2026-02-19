@@ -8,7 +8,17 @@ import {
   DeleteButton,
   useRecordContext,
   useListContext,
+  TopToolbar,
+  CreateButton,
 } from "react-admin";
+import { ExportButton } from "../../components/ExportButton";
+
+const PhotoForDetectionListActions = () => (
+  <TopToolbar>
+    <CreateButton />
+    <ExportButton filename="photos-for-detection" />
+  </TopToolbar>
+);
 
 const RowNumberField = () => {
   const record = useRecordContext();
@@ -20,7 +30,7 @@ const RowNumberField = () => {
 RowNumberField.defaultProps = { label: "#" };
 
 export const PhotoForDetectionList = () => (
-  <List>
+  <List actions={<PhotoForDetectionListActions />}>
     <Datagrid rowClick="edit">
       <RowNumberField />
       <ReferenceField source="photo_session_id" reference="photo-sessions" label="Photo Session">

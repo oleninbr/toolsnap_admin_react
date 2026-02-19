@@ -74,7 +74,7 @@ export const MapPicker = ({ latitude, longitude, onCoordinateSelect, onAddressUp
         // Формуємо адресу з названою вулиці та номером будинку
         const streetName = addressData.road || addressData.street || "";
         const houseNumber = addressData.house_number || "";
-        const city = addressData.city || addressData.town || "";
+       // const city = addressData.city || addressData.town || "";
         
         const fullAddress = [streetName, houseNumber]
           .filter(Boolean)

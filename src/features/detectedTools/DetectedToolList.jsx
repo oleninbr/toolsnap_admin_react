@@ -9,7 +9,17 @@ import {
   DeleteButton,
   useRecordContext,
   useListContext,
+  TopToolbar,
+  CreateButton,
 } from "react-admin";
+import { ExportButton } from "../../components/ExportButton";
+
+const DetectedToolListActions = () => (
+  <TopToolbar>
+    <CreateButton />
+    <ExportButton filename="detected-tools" />
+  </TopToolbar>
+);
 
 const RowNumberField = () => {
   const record = useRecordContext();
@@ -21,7 +31,7 @@ const RowNumberField = () => {
 RowNumberField.defaultProps = { label: "#" };
 
 export const DetectedToolList = () => (
-  <List>
+  <List actions={<DetectedToolListActions />}>
     <Datagrid rowClick="edit">
       <RowNumberField />
       <ReferenceField source="photo_session_id" reference="photo-sessions" label="Photo Session">

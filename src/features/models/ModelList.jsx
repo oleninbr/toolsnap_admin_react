@@ -6,7 +6,17 @@ import {
   DeleteButton,
   useRecordContext,
   useListContext,
+  TopToolbar,
+  CreateButton,
 } from "react-admin";
+import { ExportButton } from "../../components/ExportButton";
+
+const ModelListActions = () => (
+  <TopToolbar>
+    <CreateButton />
+    <ExportButton filename="models" />
+  </TopToolbar>
+);
 
 const RowNumberField = () => {
   const record = useRecordContext();
@@ -18,7 +28,7 @@ const RowNumberField = () => {
 RowNumberField.defaultProps = { label: "#" };
 
 export const ModelList = () => (
-  <List>
+  <List actions={<ModelListActions />}>
     <Datagrid rowClick="edit">
       <RowNumberField />
       <TextField source="title" />
