@@ -1,20 +1,21 @@
 import pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts";
+import pdfFonts from "pdfmake/build/vfs_fonts.js";
 
-// Initialize vfs fonts for pdfMake
-if (pdfFonts) {
-  pdfMake.vfs = pdfFonts.pdfMake?.vfs || pdfFonts.vfs || pdfFonts;
+// Initialize vfs fonts with flexible structure detection
+try {
+  // Try multiple possible structures for the vfs object
+  if (pdfFonts?.pdfMake?.vfs) {
+    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  } else if (pdfFonts?.vfs) {
+    pdfMake.vfs = pdfFonts.vfs;
+  } else if (pdfFonts && typeof pdfFonts === 'object' && Object.keys(pdfFonts).length > 0) {
+    // If it's an object with vfs data directly
+    pdfMake.vfs = pdfFonts;
+  }
+  console.log("✅ VFS initialized successfully");
+} catch (error) {
+  console.error("⚠️ Error initializing VFS, PDF export may fail:", error);
 }
-
-// Define fonts - using standard fonts that pdfMake supports
-pdfMake.fonts = {
-  Roboto: {
-    normal: "Roboto-Regular.ttf",
-    bold: "Roboto-Medium.ttf",
-    italics: "Roboto-Italic.ttf",
-    bolditalics: "Roboto-MediumItalic.ttf",
-  },
-};
 
 /**
  * Convert array of objects to CSV string
@@ -153,7 +154,6 @@ export const downloadPDF = (data, columns, filename = "export.pdf") => {
         },
       },
       defaultStyle: {
-        font: "Roboto",
         color: "black",
       },
     };
