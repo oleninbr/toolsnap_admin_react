@@ -21,11 +21,16 @@ const MapPickerWrapper = () => {
     setValue("longitude", coords.longitude);
   };
 
+  const handleAddressUpdate = (address) => {
+    setValue("address", address);
+  };
+
   return (
     <MapPicker
       latitude={latitude}
       longitude={longitude}
       onCoordinateSelect={handleCoordinateSelect}
+      onAddressUpdate={handleAddressUpdate}
     />
   );
 };
