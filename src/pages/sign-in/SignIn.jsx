@@ -25,7 +25,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   width: '100%',
   padding: theme.spacing(4),
   gap: theme.spacing(2),
-  margin: 'auto',
+  margin: '0 auto',
   [theme.breakpoints.up('sm')]: {
     maxWidth: '450px',
   },
@@ -40,6 +40,9 @@ const Card = styled(MuiCard)(({ theme }) => ({
 const SignInContainer = styled(Stack)(({ theme }) => ({
   height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
   minHeight: '100%',
+  width: '100%',
+  justifyContent: 'center',
+  alignItems: 'center',
   padding: theme.spacing(2),
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
@@ -130,7 +133,7 @@ export default function SignIn() {
   };
 
   return (
-    <SignInContainer direction="column" justifyContent="space-between">
+    <SignInContainer direction="column">
       <Card variant="outlined">
           <SitemarkIcon />
           <Typography
