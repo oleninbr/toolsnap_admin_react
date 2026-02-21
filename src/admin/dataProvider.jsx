@@ -3,11 +3,15 @@ import { tokenManager } from "../utils/tokenManager";
 const API_URL = "https://localhost:7062";
 
 // Helper function to get authorization headers
-const getAuthHeaders = () => {
+const getAuthHeaders = (isFormData = false) => {
   const token = tokenManager.getAccessToken();
-  const headers = {
-    "Content-Type": "application/json",
-  };
+  const headers = {};
+  
+  // Don't set Content-Type for FormData (browser will set it with boundary)
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
+  
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -16,11 +20,13 @@ const getAuthHeaders = () => {
 
 // Helper function to make authenticated request with retry on 401
 const fetchWithRetry = async (url, options = {}) => {
+  const isFormData = options.body instanceof FormData;
+  
   let response = await fetch(url, {
     ...options,
     headers: {
       ...options.headers,
-      ...getAuthHeaders(),
+      ...getAuthHeaders(isFormData),
     },
   });
 
@@ -36,7 +42,7 @@ const fetchWithRetry = async (url, options = {}) => {
         ...options,
         headers: {
           ...options.headers,
-          ...getAuthHeaders(),
+          ...getAuthHeaders(isFormData),
         },
       });
       
@@ -180,11 +186,26 @@ const dataProvider = {
       const url = `${API_URL}/${resource}`;
       console.log("🔵 Creating:", url, params.data);
       
-      const response = await fetchWithRetry(url, {
+      // Special handling for tool-photos with file upload
+      let options = {
         method: "POST",
         credentials: "omit",
-        body: JSON.stringify(params.data),
-      });
+      };
+
+      if (params.data instanceof FormData) {
+        // For FormData, only add Authorization header (browser sets Content-Type with boundary)
+        const token = tokenManager.getAccessToken();
+        options.headers = {};
+        if (token) {
+          options.headers["Authorization"] = `Bearer ${token}`;
+        }
+        options.body = params.data;
+      } else {
+        // For regular JSON data
+        options.body = JSON.stringify(params.data);
+      }
+      
+      const response = await fetchWithRetry(url, options);
 
       if (!response.ok) throw new Error("Failed to create");
 
