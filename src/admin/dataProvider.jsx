@@ -1,8 +1,10 @@
+import { tokenManager } from "../utils/tokenManager";
+
 const API_URL = "https://localhost:7062";
 
 // Helper function to get authorization headers
 const getAuthHeaders = () => {
-  const token = localStorage.getItem("auth_token");
+  const token = tokenManager.getAccessToken();
   const headers = {
     "Content-Type": "application/json",
   };
@@ -10,6 +12,42 @@ const getAuthHeaders = () => {
     headers["Authorization"] = `Bearer ${token}`;
   }
   return headers;
+};
+
+// Helper function to make authenticated request with retry on 401
+const fetchWithRetry = async (url, options = {}) => {
+  let response = await fetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      ...getAuthHeaders(),
+    },
+  });
+
+  // If 401, try to refresh token and retry once
+  if (response.status === 401) {
+    console.log("🔄 Token expired, refreshing...");
+    
+    try {
+      await tokenManager.refreshAccessToken();
+      
+      // Retry request with new token
+      response = await fetch(url, {
+        ...options,
+        headers: {
+          ...options.headers,
+          ...getAuthHeaders(),
+        },
+      });
+      
+      console.log("✅ Request retried with new token");
+    } catch (refreshError) {
+      console.error("❌ Token refresh failed:", refreshError);
+      throw response;
+    }
+  }
+
+  return response;
 };
 
 const dataProvider = {
@@ -38,10 +76,9 @@ const dataProvider = {
     try {
       console.log("🔵 Fetching:", url.toString());
       
-      const response = await fetch(url.toString(), {
+      const response = await fetchWithRetry(url.toString(), {
         method: "GET",
         credentials: "omit",
-        headers: getAuthHeaders(),
       });
 
       console.log("📊 Response status:", response.status);
@@ -86,10 +123,9 @@ const dataProvider = {
       const url = `${API_URL}/${resource}/${params.id}`;
       console.log("🔵 Fetching:", url);
       
-      const response = await fetch(url, {
+      const response = await fetchWithRetry(url, {
         method: "GET",
         credentials: "omit",
-        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error("Failed to fetch one");
@@ -117,10 +153,9 @@ const dataProvider = {
 
       console.log("🔵 Fetching many:", url.toString());
       
-      const response = await fetch(url.toString(), {
+      const response = await fetchWithRetry(url.toString(), {
         method: "GET",
         credentials: "omit",
-        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error("Failed to fetch many");
@@ -145,10 +180,9 @@ const dataProvider = {
       const url = `${API_URL}/${resource}`;
       console.log("🔵 Creating:", url, params.data);
       
-      const response = await fetch(url, {
+      const response = await fetchWithRetry(url, {
         method: "POST",
         credentials: "omit",
-        headers: getAuthHeaders(),
         body: JSON.stringify(params.data),
       });
 
@@ -168,10 +202,9 @@ const dataProvider = {
       const url = `${API_URL}/${resource}/${params.id}`;
       console.log("🔵 Updating:", url, params.data);
       
-      const response = await fetch(url, {
+      const response = await fetchWithRetry(url, {
         method: "PUT",
         credentials: "omit",
-        headers: getAuthHeaders(),
         body: JSON.stringify(params.data),
       });
 
@@ -191,10 +224,9 @@ const dataProvider = {
       const url = `${API_URL}/${resource}/${params.id}`;
       console.log("🔵 Deleting:", url);
       
-      const response = await fetch(url, {
+      const response = await fetchWithRetry(url, {
         method: "DELETE",
         credentials: "omit",
-        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error("Failed to delete");
@@ -213,10 +245,9 @@ const dataProvider = {
         params.ids.map(id => {
           const url = `${API_URL}/${resource}/${id}`;
           console.log("🔵 Deleting:", url);
-          return fetch(url, {
+          return fetchWithRetry(url, {
             method: "DELETE",
             credentials: "omit",
-            headers: getAuthHeaders(),
           });
         })
       );
