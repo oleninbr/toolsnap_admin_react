@@ -11,7 +11,10 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/material/styles';
+import { useLogin, useNotify } from 'react-admin';
 import ForgotPassword from './components/ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './components/CustomIcons';
 
@@ -63,6 +66,10 @@ export default function SignIn() {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState('');
+  const login = useLogin();
+  const notify = useNotify();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -70,18 +77,6 @@ export default function SignIn() {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleSubmit = (event) => {
-    if (emailError || passwordError) {
-      event.preventDefault();
-      return;
-    }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
   };
 
   const validateInputs = () => {
@@ -111,6 +106,29 @@ export default function SignIn() {
     return isValid;
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    if (!validateInputs()) {
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    const data = new FormData(event.currentTarget);
+    const email = data.get('email');
+    const password = data.get('password');
+
+    try {
+      await login({ email, password });
+    } catch (err) {
+      setError(err.message || 'Invalid credentials');
+      setLoading(false);
+      notify('Login failed', { type: 'warning' });
+    }
+  };
+
   return (
     <SignInContainer direction="column" justifyContent="space-between">
       <Card variant="outlined">
@@ -122,6 +140,13 @@ export default function SignIn() {
           >
             Sign in
           </Typography>
+          
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -148,6 +173,7 @@ export default function SignIn() {
                 fullWidth
                 variant="outlined"
                 color={emailError ? 'error' : 'primary'}
+                disabled={loading}
               />
             </FormControl>
             <FormControl>
@@ -165,10 +191,11 @@ export default function SignIn() {
                 fullWidth
                 variant="outlined"
                 color={passwordError ? 'error' : 'primary'}
+                disabled={loading}
               />
             </FormControl>
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={<Checkbox value="remember" color="primary" disabled={loading} />}
               label="Remember me"
             />
             <ForgotPassword open={open} handleClose={handleClose} />
@@ -177,8 +204,13 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               onClick={validateInputs}
+              disabled={loading}
+              sx={{
+                position: 'relative',
+              }}
             >
-              Sign in
+              {loading ? <CircularProgress size={24} sx={{ position: 'absolute' }} /> : 'Sign in'}
+              {loading && <span style={{ visibility: 'hidden' }}>Sign in</span>}
             </Button>
             <Link
               component="button"
@@ -186,6 +218,7 @@ export default function SignIn() {
               onClick={handleClickOpen}
               variant="body2"
               sx={{ alignSelf: 'center' }}
+              disabled={loading}
             >
               Forgot your password?
             </Link>
@@ -197,6 +230,7 @@ export default function SignIn() {
               variant="outlined"
               onClick={() => alert('Sign in with Google')}
               startIcon={<GoogleIcon />}
+              disabled={loading}
             >
               Sign in with Google
             </Button>
@@ -205,13 +239,14 @@ export default function SignIn() {
               variant="outlined"
               onClick={() => alert('Sign in with Facebook')}
               startIcon={<FacebookIcon />}
+              disabled={loading}
             >
               Sign in with Facebook
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
               Don&apos;t have an account?{' '}
               <Link
-                href="/material-ui/getting-started/templates/sign-in/"
+                href="/register"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >

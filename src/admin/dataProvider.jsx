@@ -1,5 +1,17 @@
 const API_URL = "https://localhost:7062";
 
+// Helper function to get authorization headers
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("auth_token");
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+};
+
 const dataProvider = {
   getList: async (resource, params) => {
     const url = new URL(`${API_URL}/${resource}`);
@@ -29,6 +41,7 @@ const dataProvider = {
       const response = await fetch(url.toString(), {
         method: "GET",
         credentials: "omit",
+        headers: getAuthHeaders(),
       });
 
       console.log("📊 Response status:", response.status);
@@ -76,6 +89,7 @@ const dataProvider = {
       const response = await fetch(url, {
         method: "GET",
         credentials: "omit",
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error("Failed to fetch one");
@@ -106,6 +120,7 @@ const dataProvider = {
       const response = await fetch(url.toString(), {
         method: "GET",
         credentials: "omit",
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error("Failed to fetch many");
@@ -133,7 +148,7 @@ const dataProvider = {
       const response = await fetch(url, {
         method: "POST",
         credentials: "omit",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify(params.data),
       });
 
@@ -156,7 +171,7 @@ const dataProvider = {
       const response = await fetch(url, {
         method: "PUT",
         credentials: "omit",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify(params.data),
       });
 
@@ -179,6 +194,7 @@ const dataProvider = {
       const response = await fetch(url, {
         method: "DELETE",
         credentials: "omit",
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error("Failed to delete");
@@ -200,6 +216,7 @@ const dataProvider = {
           return fetch(url, {
             method: "DELETE",
             credentials: "omit",
+            headers: getAuthHeaders(),
           });
         })
       );

@@ -1,6 +1,8 @@
 import { Admin, Resource } from "react-admin";
 import dataProvider from "./dataProvider";
+import authProvider from "./authProvider";
 import { MyLayout } from "./layout/Layout";
+import SignIn from "../pages/sign-in/SignIn";
 
 // Tools
 import { ToolList } from "../features/tools/ToolList";
@@ -83,7 +85,12 @@ import { LocationEdit } from "../features/locations/LocationEdit";
 import { LocationCreate } from "../features/locations/LocationCreate";
 
 export const AdminApp = () => (
-  <Admin dataProvider={dataProvider} layout={MyLayout}>
+  <Admin 
+    dataProvider={dataProvider} 
+    authProvider={authProvider}
+    loginPage={SignIn}
+    layout={MyLayout}
+  >
     <Resource
       name="tools"
       list={ToolList}
