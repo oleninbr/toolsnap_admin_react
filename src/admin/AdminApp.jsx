@@ -1,8 +1,10 @@
-import { Admin, Resource } from "react-admin";
+import { Admin, Resource, CustomRoutes } from "react-admin";
+import { Route } from "react-router-dom";
 import dataProvider from "./dataProvider";
 import authProvider from "./authProvider";
 import { MyLayout } from "./layout/Layout";
 import SignIn from "../pages/sign-in/SignIn";
+import { ProfilePage } from "../pages/profile/ProfilePage";
 
 // Tools
 import { ToolList } from "../features/tools/ToolList";
@@ -91,6 +93,10 @@ export const AdminApp = () => (
     loginPage={SignIn}
     layout={MyLayout}
   >
+    <CustomRoutes>
+      <Route path="/profile" element={<ProfilePage />} />
+    </CustomRoutes>
+
     <Resource
       name="tools"
       list={ToolList}

@@ -1,6 +1,24 @@
 import { Layout, UserMenu, Logout, AppBar } from "react-admin";
-import { Box, Typography, Chip } from "@mui/material";
+import { Box, Typography, Chip, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import { CustomMenu } from "./Menu";
+import PersonIcon from "@mui/icons-material/Person";
+import { useNavigate } from "react-router-dom";
+
+const CustomUserMenu = () => {
+  const navigate = useNavigate();
+  
+  return (
+    <UserMenu>
+      <MenuItem onClick={() => navigate('/profile')}>
+        <ListItemIcon>
+          <PersonIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>My Profile</ListItemText>
+      </MenuItem>
+      <Logout />
+    </UserMenu>
+  );
+};
 
 const CustomAppBar = () => (
   <AppBar>
@@ -42,6 +60,6 @@ export const MyLayout = (props) => (
     {...props}
     menu={CustomMenu}
     appBar={CustomAppBar}
-    userMenu={<UserMenu><Logout /></UserMenu>}
+    userMenu={<CustomUserMenu />}
   />
 );
