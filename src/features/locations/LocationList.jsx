@@ -14,6 +14,7 @@ import {
   CreateButton,
 } from "react-admin";
 import { ExportButton } from "../../components/ExportButton";
+import { LocationMap } from "./LocationMap";
 
 const LocationListActions = () => (
   <TopToolbar>
@@ -33,6 +34,7 @@ RowNumberField.defaultProps = { label: "#" };
 
 export const LocationList = () => (
   <List actions={<LocationListActions />}>
+    <LocationMap />
     <Datagrid rowClick="edit">
       <RowNumberField />
       <TextField source="name" />

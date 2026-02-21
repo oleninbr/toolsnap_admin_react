@@ -79,7 +79,7 @@ export const MapPicker = ({ latitude, longitude, onCoordinateSelect, onAddressUp
         const fullAddress = [streetName, houseNumber]
           .filter(Boolean)
           .join(", ");
-        
+          
         onAddressUpdate(fullAddress);
       }
       setIsLoadingAddress(false);
