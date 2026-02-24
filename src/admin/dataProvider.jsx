@@ -32,7 +32,7 @@ const fetchWithRetry = async (url, options = {}) => {
 
   // If 401, try to refresh token and retry once
   if (response.status === 401) {
-    console.log("🔄 Token expired, refreshing...");
+    console.log("Token expired, refreshing...");
     
     try {
       await tokenManager.refreshAccessToken();
@@ -46,9 +46,9 @@ const fetchWithRetry = async (url, options = {}) => {
         },
       });
       
-      console.log("✅ Request retried with new token");
+      console.log("Request retried with new token");
     } catch (refreshError) {
-      console.error("❌ Token refresh failed:", refreshError);
+      console.error("Token refresh failed:", refreshError);
       throw response;
     }
   }
@@ -80,27 +80,27 @@ const dataProvider = {
     }
 
     try {
-      console.log("🔵 Fetching:", url.toString());
+      console.log("Fetching:", url.toString());
       
       const response = await fetchWithRetry(url.toString(), {
         method: "GET",
         credentials: "omit",
       });
 
-      console.log("📊 Response status:", response.status);
-      console.log("📝 Response headers:", {
+      console.log("Response status:", response.status);
+      console.log("Response headers:", {
         contentRange: response.headers.get("Content-Range"),
         contentType: response.headers.get("Content-Type"),
       });
 
       if (!response.ok) {
         const error = await response.text();
-        console.error("❌ API Error:", error);
+        console.error("API Error:", error);
         throw new Error(`API returned ${response.status}: ${error}`);
       }
 
       const data = await response.json();
-      console.log("✅ Data received:", data);
+      console.log("Data received:", data);
       
       // If Content-Range header exists, use it; otherwise use data length
       const contentRange = response.headers.get("Content-Range");
@@ -119,7 +119,7 @@ const dataProvider = {
         total,
       };
     } catch (error) {
-      console.error("🔴 Fetch error:", error);
+      console.error("Fetch error:", error);
       throw error;
     }
   },
@@ -127,7 +127,7 @@ const dataProvider = {
   getOne: async (resource, params) => {
     try {
       const url = `${API_URL}/${resource}/${params.id}`;
-      console.log("🔵 Fetching:", url);
+      console.log("Fetching:", url);
       
       const response = await fetchWithRetry(url, {
         method: "GET",
@@ -137,10 +137,10 @@ const dataProvider = {
       if (!response.ok) throw new Error("Failed to fetch one");
 
       const data = await response.json();
-      console.log("✅ Data received:", data);
+      console.log("Data received:", data);
       return { data };
     } catch (error) {
-      console.error("🔴 Fetch error:", error);
+      console.error("Fetch error:", error);
       throw error;
     }
   },
@@ -157,7 +157,7 @@ const dataProvider = {
         });
       }
 
-      console.log("🔵 Fetching many:", url.toString());
+      console.log("Fetching many:", url.toString());
       
       const response = await fetchWithRetry(url.toString(), {
         method: "GET",
@@ -167,7 +167,7 @@ const dataProvider = {
       if (!response.ok) throw new Error("Failed to fetch many");
 
       const data = await response.json();
-      console.log("✅ Data received:", data);
+      console.log("Data received:", data);
       
       // Filter data to only include requested IDs
       const filteredData = Array.isArray(data)
@@ -176,7 +176,7 @@ const dataProvider = {
 
       return { data: filteredData };
     } catch (error) {
-      console.error("🔴 Fetch many error:", error);
+      console.error("Fetch many error:", error);
       throw error;
     }
   },
@@ -184,7 +184,7 @@ const dataProvider = {
   create: async (resource, params) => {
     try {
       const url = `${API_URL}/${resource}`;
-      console.log("🔵 Creating:", url, params.data);
+      console.log("Creating:", url, params.data);
       
       // Special handling for tool-photos with file upload
       let options = {
@@ -210,10 +210,10 @@ const dataProvider = {
       if (!response.ok) throw new Error("Failed to create");
 
       const data = await response.json();
-      console.log("✅ Created:", data);
+      console.log("Created:", data);
       return { data };
     } catch (error) {
-      console.error("🔴 Creation error:", error);
+      console.error("Creation error:", error);
       throw error;
     }
   },
@@ -221,7 +221,7 @@ const dataProvider = {
   update: async (resource, params) => {
     try {
       const url = `${API_URL}/${resource}/${params.id}`;
-      console.log("🔵 Updating:", url, params.data);
+      console.log("Updating:", url, params.data);
       
       const response = await fetchWithRetry(url, {
         method: "PUT",
@@ -232,10 +232,10 @@ const dataProvider = {
       if (!response.ok) throw new Error("Failed to update");
 
       const data = await response.json();
-      console.log("✅ Updated:", data);
+      console.log("Updated:", data);
       return { data };
     } catch (error) {
-      console.error("🔴 Update error:", error);
+      console.error("Update error:", error);
       throw error;
     }
   },
@@ -243,7 +243,7 @@ const dataProvider = {
   delete: async (resource, params) => {
     try {
       const url = `${API_URL}/${resource}/${params.id}`;
-      console.log("🔵 Deleting:", url);
+      console.log("Deleting:", url);
       
       const response = await fetchWithRetry(url, {
         method: "DELETE",
@@ -252,10 +252,10 @@ const dataProvider = {
 
       if (!response.ok) throw new Error("Failed to delete");
 
-      console.log("✅ Deleted");
+      console.log("Deleted");
       return { data: {} };
     } catch (error) {
-      console.error("🔴 Delete error:", error);
+      console.error("Delete error:", error);
       throw error;
     }
   },
@@ -265,7 +265,7 @@ const dataProvider = {
       const responses = await Promise.all(
         params.ids.map(id => {
           const url = `${API_URL}/${resource}/${id}`;
-          console.log("🔵 Deleting:", url);
+          console.log("Deleting:", url);
           return fetchWithRetry(url, {
             method: "DELETE",
             credentials: "omit",
@@ -275,10 +275,10 @@ const dataProvider = {
 
       if (responses.some(r => !r.ok)) throw new Error("Failed to delete");
 
-      console.log("✅ All deleted");
+      console.log("All deleted");
       return { data: params.ids };
     } catch (error) {
-      console.error("🔴 Delete many error:", error);
+      console.error("Delete many error:", error);
       throw error;
     }
   },
